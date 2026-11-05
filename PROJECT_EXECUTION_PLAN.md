@@ -1,381 +1,155 @@
 # Skyline Learning Center (SLC Academy)
-## Comprehensive Project Execution Plan
+## Comprehensive Project Execution Plan & Technical Specification
 
 > **Target Platforms:** Android Mobile & iPad / Tablet (Responsive Mobile-First Architecture)  
-> **Initial Scope:** Phase 1 – Admin-Only System (with full multi-role DB & API schema prepared for Phase 2: Teachers & Students)  
-> **Theme Reference:** Modern Crimson-Coral & Warm White UI (inspired by design mockup)
+> **Current Status:** Phase 1 Complete (Full-featured Frontend Admin Application with Mock Data, Strict Validation & PDF Engine)  
+> **Next Milestone:** Phase 2 (FastAPI REST Backend, PostgreSQL Relational DB, SQLite Cache, JWT Auth & MongoDB Atlas)  
+> **Color Scheme:** Primary Coral/Red (`#FA4338`), Dark Navy (`#1E202B`), Soft Warm White Canvas (`#F8F9FD`), Emerald Green (`#10B981`)
 
 ---
 
-## 1. Executive Summary & Design System
+## 1. System Vision & Architecture
 
-SLC Academy is a role-based educational academy management application. It streamlines student admissions, teacher allocations, course catalogs, manual fee assignments, lecture timetabling, and examination grading.
-
-### 1.1 Color Palette & UI Tokens (Extracted from Design Reference)
-* **Primary Brand Coral/Red:** `#FA4338` / `#FF4742`
-* **Primary Gradient:** `linear-gradient(135deg, #FF6B60 0%, #FA4338 100%)`
-* **Primary Dark Navy (Text & Badges):** `#1E202B` / `#2D3142`
-* **App Background:** `#F8F9FD` (Soft warm grayish-white)
-* **Surface / Card Background:** `#FFFFFF` (20px–24px rounded corners, smooth elevation shadows: `0 10px 30px rgba(0, 0, 0, 0.05)`)
-* **Secondary / Muted Gray:** `#8E92A4`
-* **Accent Gold / Amber (Ratings & Pending fees):** `#FFB800` / `#F59E0B`
-* **Success Emerald Green (Paid / Passed):** `#10B981`
-* **Button Style:** Pill-shaped (`border-radius: 9999px`), bold typography, crisp active press animations.
-
-### 1.2 Responsive Screen Adaptations
-* **Mobile (Android - 360px to 480px width):** Single column, bottom navigation bar, floating action buttons, swipeable cards, touch-optimized dialogs.
-* **Tablet (iPad / Android Tablet - 768px to 1024px+ width):** Collapsible dual-column sidebar layout, master-detail views for student/fee lists, wider timetable grids, split modal sheets.
-
----
-
-## 2. Technology Stack & Architectural Division
-
-| Layer | Technology | Purpose & Responsibility |
-| :--- | :--- | :--- |
-| **Frontend** | React.js (Vite + Tailwind CSS + Lucide Icons) | Cross-platform responsive mobile/tablet web UI. Prepared for Capacitor wrapper for native Android APK & iPad builds. |
-| **Backend API** | FastAPI (Python 3.10+) | High-performance asynchronous REST API, auto OpenAPI/Swagger docs, Pydantic v2 schemas. |
-| **Relational Database** | PostgreSQL | Primary source of truth for structured transactional data: Users, Roles, Courses, Enrollments, Fees, Timetables, Exams, and Marks. |
-| **Document Database** | MongoDB Atlas | Audit trails, administrative activity logs, notification archives, and generated report snapshot cache. |
-| **Local Cache** | SQLite Cache (`aiosqlite` / client IndexedDB-SQLite) | High-speed local cache for timetable slots, offline-capable lookup tables, and query response caching. |
-| **Authentication** | JWT (JSON Web Tokens) with Passlib & Bcrypt | Bearer tokens with strict RBAC (`ADMIN`, `TEACHER`, `STUDENT`). |
-| **Media Handling** | Pillow (Python) + Client-side canvas compression | Strict profile photo validation: maximum **100 KB**, auto-resize to 400x400 JPG/WebP. |
-| **Reporting Engine** | ReportLab / WeasyPrint (Backend) + jsPDF (Frontend) | Print-ready Timetable PDF and Examination Schedule PDF generation. |
+Skyline Learning Center (SLC Academy) is an enterprise-grade academic management system designed for iPads, Android tablets, and mobile smartphones. It unifies student admissions, faculty course assignments, academic classrooms, fee collection & billing, conflict-free lecture scheduling, and examination grading into an intuitive, responsive application.
 
 ```mermaid
 graph TD
-    subgraph Client Layer [Frontend: React.js on iPad & Android]
-        UI[Mobile & Tablet Responsive UI]
-        ClientCache[Client Cache / IndexedDB]
-        UI --> ClientCache
+    subgraph Client Application [React.js Frontend (Vite + Tailwind CSS)]
+        Auth[Admin JWT Authentication]
+        UI[Responsive Mobile/Tablet/Desktop Interface]
+        BottomNav[Mobile 4-Tab Bottom Bar]
+        Drawer[Top-Right 3-Bar Navigation Drawer]
+        PdfEngine[High-Resolution A4 PDF Viewer & Generator]
+        ZoomEngine[Click-to-Zoom Profile Photo Modal]
+        AlertEngine[Custom Validation & Alert Modal System]
     end
 
-    subgraph API Gateway Layer [FastAPI Backend]
-        Auth[JWT RBAC Middleware]
-        ImgFilter[100 KB Image Validator & Compressor]
-        Router[API Route Controllers]
-        ServerCache[(Local SQLite Cache)]
-        
-        UI -->|HTTPS / JSON + Multipart| Auth
-        Auth --> ImgFilter
-        Auth --> Router
-        Router <--> ServerCache
+    subgraph Backend Services [Phase 2: FastAPI Microservice]
+        API[FastAPI Asynchronous Gateway]
+        RBAC[Role-Based Access Control]
+        ConflictEngine[Timetable Conflict Detection Service]
+        ImgProcessor[Pillow 100KB Image Validator & Compressor]
     end
 
-    subgraph Persistence Layer [Databases]
-        Postgres[(PostgreSQL: Core Relational DB)]
-        Mongo[(MongoDB Atlas: Audit & Snapshots)]
-        Media[(Static / Local Media Storage <=100KB)]
-        
-        Router <-->|SQLAlchemy ORM| Postgres
-        Router <-->|Motor Async Driver| Mongo
-        ImgFilter --> Media
+    subgraph Data & Storage Layer [Databases]
+        Postgres[(PostgreSQL: Core Academic & Fee Relational DB)]
+        Mongo[(MongoDB Atlas: Audit Trails & Report Snapshots)]
+        SqliteCache[(SQLite / IndexedDB Local Cache)]
     end
+
+    UI --> Auth
+    UI --> BottomNav
+    UI --> Drawer
+    UI --> PdfEngine
+    UI --> ZoomEngine
+    UI --> AlertEngine
+
+    Auth -.-> API
+    API --> RBAC
+    API --> ConflictEngine
+    API --> ImgProcessor
+    API --> Postgres
+    API --> Mongo
+    API --> SqliteCache
 ```
 
 ---
 
-## 3. Database Architecture & Schema Design
+## 2. Updated Phase 1 Frontend Deliverables (Completed)
 
-### 3.1 PostgreSQL Relational Model
+### 2.1 Role & Access Model
+* **Current Implementation:** Single dedicated **Admin** portal.
+* **Authentication:** Secure login (`admin@slc.edu.pk` / `admin123`) with persistent session state, logout, and profile pill.
+* **Prepared Role Structure:** DB and state ready for `TEACHER` and `STUDENT` accounts in Phase 2 (restricted to password updates only).
+
+### 2.2 Mobile-First Navigation System
+* **Mobile Viewports (< 768px):** Exactly **4 primary tabs** on the bottom navigation bar:
+  1. **Dashboard:** Key metrics, quick actions, today's lecture schedule, and upcoming examinations.
+  2. **Courses:** Academic course catalog with class track badges, assigned teachers, and base fees.
+  3. **Fee:** Tuition register, collections, 3-column bank chalan generator, and verified payment receipts.
+  4. **Timetable:** Interactive lecture scheduler with automated conflict detection.
+* **Top Header & Drawer:**
+  - Header brand pill with animated indicator.
+  - Top-right Profile Pill displaying admin avatar and credentials.
+  - Top-right 3-bar hamburger button toggling a slide-out drawer containing all modules: Dashboard, Students, Teachers, Courses, Classrooms, Fee, Timetable, Exams, and System Settings.
+
+### 2.3 Strict Validation & Custom Alert Box
+* Replaced native browser alerts with custom animated `CustomAlertModal` (Success, Error, Warning, Confirmation).
+* **Profile Photo Limits:** Strict **100 KB** limit validation on student and teacher photos with size feedback and file inspection.
+* **Image Zoom Modal:** Student and teacher profile pictures are displayed as small compact icons (`w-11 h-11 rounded-full object-cover`). Clicking any photo opens a high-resolution centered popup with a close button (`✕`) and metadata badge.
+
+### 2.4 Academic Modules & Business Logic
+1. **Students Directory:**
+   - Enrolled courses selection, roll number generation, guardian details, and fee linkage.
+   - Direct button to generate individual **Detailed Marks Certificate (DMC) / Mark Sheet** PDF.
+2. **Teachers Directory:**
+   - Specialization, qualifications, contact info, and assigned courses.
+3. **Courses & Classes:**
+   - Course code, course title, class name (e.g. `O-Levels`, `A-Levels`), and optional section name.
+   - Removed obsolete category and duration fields.
+   - Direct teacher assignment.
+4. **Classroom Management (CRUD):**
+   - Manage lecture halls, classrooms, science laboratories, and computer labs with capacity, floor, and building records.
+5. **Conflict-Free Timetable Scheduler:**
+   - Instructor is automatically assigned from the course configuration.
+   - Real-time conflict engine: Blocks overlapping slots for the same instructor or same classroom.
+   - In-page **Weekly Master Timetable Report (PDF)** button.
+6. **Fee Management & Invoicing:**
+   - Admin enters fee manually with course-based calculations.
+   - **3-Column Fee Chalan (A4 Landscape):** Features Bank Copy, Academy Copy, and Student Copy.
+   - **Official Fee Receipt (A4 Portrait):** Issued upon payment / clearance (`balance === 0`), complete with transaction serial, ledger verification, itemized course list, rules, and official signature/stamp block.
+7. **Exams & Testing:**
+   - Exam scheduling, total marks, passing marks, venue, and invigilator assignment.
+   - In-page **Exam Schedule Date Sheet (PDF)** generator.
+   - Marks recording and grade computation (A*, A, B, C, D, F).
+
+### 2.5 Responsive A4 PDF Engine & Mobile Viewer
+* **Dynamic Scaling:** `PdfViewerModal` auto-detects device viewport. On mobile phones, it activates **Fit Screen** mode, scaling the entire A4 sheet so that 100% of the document is visible without horizontal overflow.
+* **Zoom Toolbar:** Includes `Fit Screen`, `100% Actual`, and `+` / `-` zoom controls.
+* **Offscreen Sandbox Export:** `pdfGenerator.js` renders cloned nodes in an isolated offscreen container at exact standard A4 dimensions (`794px` portrait, `1123px` landscape), completely eliminating scroll clipping and distortion.
+
+---
+
+## 3. Technology Stack
+
+| Layer | Technology | Specification & Role |
+| :--- | :--- | :--- |
+| **Frontend UI** | React 18 + Vite | Single Page Application with optimized bundle splitting |
+| **Styling** | Tailwind CSS 3 | Coral/Navy color system, custom scrollbars, backdrop blur |
+| **Icons** | Lucide React | Consistent vector iconography |
+| **PDF Generation** | jsPDF + html2canvas | High-fidelity A4 document rasterization and vector PDF creation |
+| **Backend (Phase 2)** | FastAPI (Python 3.11+) | Async REST API with Pydantic v2 schemas and auto OpenAPI docs |
+| **Primary Database** | PostgreSQL | Relational schema with foreign keys and ACID transactions |
+| **Document Store** | MongoDB Atlas | Audit trails, administrative logs, and report snapshots |
+| **Local Cache** | SQLite / aiosqlite | Sub-millisecond lookup cache for timetables and course catalogs |
+| **Auth** | JWT + Passlib (Bcrypt) | Role-Based Access Control (`ADMIN`, `TEACHER`, `STUDENT`) |
+
+---
+
+## 4. Phase 2 Backend Implementation Roadmap
 
 ```mermaid
-erDiagram
-    USERS ||--o{ TEACHER_PROFILES : has
-    USERS ||--o{ STUDENT_PROFILES : has
-    TEACHER_PROFILES ||--o{ COURSE_TEACHERS : assigned
-    COURSES ||--o{ COURSE_TEACHERS : has
-    STUDENT_PROFILES ||--o{ ENROLLMENTS : enrolls
-    COURSES ||--o{ ENROLLMENTS : includes
-    STUDENT_PROFILES ||--o{ FEE_RECORDS : owes
-    FEE_RECORDS ||--o{ FEE_PAYMENTS : paid_via
-    COURSES ||--o{ TIMETABLE_SLOTS : scheduled_for
-    TEACHER_PROFILES ||--o{ TIMETABLE_SLOTS : conducts
-    COURSES ||--o{ EXAMS : contains
-    EXAMS ||--o{ EXAM_MARKS : graded
-    STUDENT_PROFILES ||--o{ EXAM_MARKS : receives
-
-    USERS {
-        uuid id PK
-        string email UK
-        string username UK
-        string hashed_password
-        string role "ADMIN | TEACHER | STUDENT"
-        boolean is_active
-        timestamp created_at
-    }
-
-    TEACHER_PROFILES {
-        uuid id PK
-        uuid user_id FK
-        string full_name
-        string phone
-        string photo_url "Max 100KB"
-        string qualification
-        string specialization
-    }
-
-    STUDENT_PROFILES {
-        uuid id PK
-        uuid user_id FK
-        string roll_number UK
-        string full_name
-        string phone
-        string guardian_name
-        string guardian_phone
-        string photo_url "Max 100KB"
-        date admission_date
-    }
-
-    COURSES {
-        uuid id PK
-        string code UK
-        string title
-        text description
-        decimal default_fee
-        string category
-        boolean is_active
-    }
-
-    COURSE_TEACHERS {
-        uuid id PK
-        uuid course_id FK
-        uuid teacher_id FK
-    }
-
-    ENROLLMENTS {
-        uuid id PK
-        uuid student_id FK
-        uuid course_id FK
-        date enrolled_at
-        boolean is_active
-    }
-
-    FEE_RECORDS {
-        uuid id PK
-        uuid student_id FK
-        decimal total_agreed_fee "Manually entered by Admin"
-        decimal total_paid
-        decimal balance_remaining
-        string status "PAID | PARTIAL | PENDING"
-        text remarks
-        timestamp created_at
-    }
-
-    FEE_PAYMENTS {
-        uuid id PK
-        uuid fee_record_id FK
-        decimal amount_paid
-        date payment_date
-        string payment_method "Cash | Online | Bank"
-        string receipt_number UK
-        text notes
-    }
-
-    TIMETABLE_SLOTS {
-        uuid id PK
-        uuid course_id FK
-        uuid teacher_id FK
-        string day_of_week "Monday - Saturday"
-        time start_time
-        time end_time
-        string room_number
-    }
-
-    EXAMS {
-        uuid id PK
-        uuid course_id FK
-        string title
-        date exam_date
-        time start_time
-        time end_time
-        decimal total_marks
-        decimal passing_marks
-        string room_number
-    }
-
-    EXAM_MARKS {
-        uuid id PK
-        uuid exam_id FK
-        uuid student_id FK
-        decimal marks_obtained
-        boolean is_absent
-        text teacher_remarks
-    }
+flowchart LR
+    Step1[Setup FastAPI & PostgreSQL Engine] --> Step2[Implement JWT RBAC & Auth Router]
+    Step2 --> Step3[Build Students, Teachers & Courses CRUD]
+    Step3 --> Step4[Implement Fee Ledger & Cashier Endpoints]
+    Step4 --> Step5[Build Timetable Conflict Detection Engine]
+    Step5 --> Step6[Exams, Grading & PDF Report API]
+    Step6 --> Step7[Integrate MongoDB Audit & SQLite Cache]
 ```
 
-### 3.2 MongoDB Atlas Collections
-* `admin_audit_logs`: Tracking every admin action (student registration, fee overrides, course assignments, timetable modifications) with timestamp, admin ID, IP, and payload snapshot.
-* `report_snapshots`: Pre-rendered JSON metadata and historical versions of generated Timetable and Exam Schedule reports for instant re-download.
-* `system_notifications`: System alerts, announcements, and fee payment receipts.
-
-### 3.3 SQLite Cache Schema
-* `cached_timetables`: Fast key-value table (`key: teacher_id / student_id / day`, `value: JSON string`, `expires_at: timestamp`).
-* `cached_reports`: Offline-first cached report metadata.
-
----
-
-## 4. Business Rules & Access Control (RBAC)
-
-1. **Strict Admin Supremacy:**
-   * Admin has exclusive rights to create, edit, deactivate, or delete Students, Teachers, Courses, Fees, Enrollments, Exams, and Timetable Slots.
-   * Admin manually assigns courses to teachers.
-   * During student creation, Admin manually selects courses and manually enters the total fee.
-2. **Teacher & Student Self-Service Restriction:**
-   * Students and Teachers **can only change their own passwords**.
-   * Personal profile fields (name, phone, photo, enrolled courses, etc.) are strictly read-only for them. They must contact Admin to request changes.
-3. **Profile Picture Constraint:**
-   * Hard limit: **100 KB**.
-   * Client-side pre-compression (HTML Canvas/WebP compressor) warns if > 100 KB.
-   * Server-side FastAPI upload validator checks byte length <= 102,400 bytes, validates image mime-type and re-encodes via Pillow to eliminate malicious code.
-4. **Grading & Timetable Permissions:**
-   * Teachers can only view schedules and enter marks for courses assigned to them.
-   * Students can view their timetable, exam schedule, obtained marks, and fee payment balance/history.
-
----
-
-## 5. Detailed Project Execution Roadmap
-
-```mermaid
-timeline
-    title SLC Academy Phased Implementation
-    Phase 1.1 : Project Setup & Environment : Backend API Scaffold : PostgreSQL & Mongo Connections
-    Phase 1.2 : Authentication & Security : JWT RBAC System : 100KB Upload Pipeline
-    Phase 1.3 : Admin Core Records : Teachers Management : Students Management : Course Catalog
-    Phase 1.4 : Admin Financials : Manual Course Selection : Manual Fee Allocation : Fee Collection & Receipts
-    Phase 1.5 : Scheduling & Exams : Lecture Timetable Engine : Exam Scheduler : PDF Report Generator
-    Phase 1.6 : Testing & Polishing : Mobile/Tablet QA : SQLite Caching : Admin Release
-    Phase 2.0 : Future Expansion : Teacher Portal & Marks Entry : Student Portal & Viewers
-```
-
-### Phase 1: Admin-Only System (Immediate Priority)
-
-#### Milestone 1.1 — Architecture & Project Scaffolding
-- [ ] Initialize repository structure (`/backend` for FastAPI, `/frontend` for React mobile-first SPA).
-- [ ] Setup PostgreSQL with Alembic migrations.
-- [ ] Setup MongoDB Atlas connection via Motor for audit logging.
-- [ ] Setup SQLite caching layer for high-speed queries.
-- [ ] Configure Vite + Tailwind CSS with the design system tokens (`#FA4338` primary coral, card shadows, pill buttons).
-
-#### Milestone 1.2 — Authentication & Base Services
-- [ ] Implement JWT Auth flow (`/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`).
-- [ ] Enforce Role-Based Access Control decorator (`@require_roles(Role.ADMIN)`).
-- [ ] Build 100 KB profile picture upload utility:
-  - Client pre-resizer + file size checker.
-  - Server validation (Pydantic / FastAPI `UploadFile`, byte size `<= 102400`, Pillow verification).
-
-#### Milestone 1.3 — Admin Teacher & Course Management
-- [ ] **Course Catalog:** CRUD for courses (Course Code, Name, Base Fee, Description).
-- [ ] **Teacher Management:**
-  - Create Teacher (Name, Phone, Email, Photo <=100KB, Qualification, Auto-generated default password).
-  - Assign one or multiple courses to a Teacher.
-  - Update & view teacher profiles and assigned workload.
-
-#### Milestone 1.4 — Admin Student Management & Manual Fee Allocation
-- [ ] **Student Admission Form:**
-  - Enter student details, guardian info, roll number, and 100 KB photo.
-  - **Manual Course Selection:** Checkbox/multi-select of available courses.
-  - **Manual Fee Entry:** Admin enters custom negotiated/total fee for this student.
-  - Automatically calculate balance (`balance = total_fee - paid_amount`).
-- [ ] **Fee Management & Cashier:**
-  - View list of students with Fee Status (`Paid`, `Partial`, `Pending`).
-  - Collect fee modal: record payment installment, payment mode (Cash/Transfer), date, and remarks.
-  - Generate downloadable/printable digital fee receipt.
-
-#### Milestone 1.5 — Timetable & Exam Management with PDF Reports
-- [ ] **Timetable Scheduling:**
-  - Visual timetable builder (Day, Start Time, End Time, Course, Teacher, Room).
-  - Conflict detection algorithm (prevents double-booking teachers or rooms).
-  - **Admin Timetable PDF Export:** Formatted daily/weekly master timetable report.
-- [ ] **Exam Management:**
-  - Schedule exams (Course, Title, Date, Timing, Total Marks, Room).
-  - **Admin Exam Schedule PDF Export:** Printable schedule for notice boards / students.
-  - Admin marks viewing & override interface.
-
-#### Milestone 1.6 — Admin Dashboard, Mobile/Tablet Optimization & Polish
-- [ ] Admin Dashboard Overview Cards (Total Students, Active Teachers, Pending Fees, Today's Lectures).
-- [ ] Optimize responsiveness for Android phones (portrait) and iPad/tablets (landscape/portrait split view).
-- [ ] Implement SQLite query caching for timetable and course queries.
-- [ ] Log all critical operations to MongoDB Atlas.
-
----
-
-### Phase 2: Teacher & Student Portals (Future Extension)
-
-#### Milestone 2.1 — Teacher Portal
-- [ ] Teacher Login & First-time password change prompt.
-- [ ] "My Assigned Courses" screen.
-- [ ] "My Lecture Timetable" view (daily & weekly agenda).
-- [ ] "Exam Marks Entry" module: select exam, view enrolled students, enter marks/absent flag, submit to admin.
-- [ ] Self-service: **Password change only**. All other profile edits disabled with "Contact Admin" banner.
-
-#### Milestone 2.2 — Student Portal
-- [ ] Student Login with Roll Number / Email.
-- [ ] "My Daily Schedule" timetable viewer with real-time indicator for active/next class.
-- [ ] "My Exams & Tests" view: upcoming exam dates, room numbers, and published marks.
-- [ ] "Fee Status": View total fee, amount paid, remaining balance, and past payment receipts.
-- [ ] Self-service: **Password change only**.
-
----
-
-## 6. API Route Specification (Phase 1 Focused)
-
-### Auth (`/api/v1/auth`)
-* `POST /login` – Authenticate with username/email & password, return JWT tokens and role.
-* `POST /change-password` – Allows any logged-in user (Admin, Teacher, Student) to update password.
-* `GET /me` – Retrieve profile and permissions of currently authenticated user.
-
-### Teachers (`/api/v1/admin/teachers`)
-* `GET /` – List teachers (search, filter by course).
-* `POST /` – Create teacher with photo (multipart/form-data, `<= 100 KB`).
-* `GET /{id}` – View teacher details and assigned courses.
-* `PUT /{id}` – Update teacher details.
-* `POST /{id}/assign-courses` – Assign/reassign courses to teacher.
-
-### Students (`/api/v1/admin/students`)
-* `GET /` – List students (search by roll number, name, fee status).
-* `POST /` – Register student with 100 KB photo, manual course selection, and manual fee entry.
-* `GET /{id}` – View comprehensive student profile, enrolled courses, and fee history.
-* `PUT /{id}` – Update student information.
-
-### Fees (`/api/v1/admin/fees`)
-* `GET /overview` – Total revenue, collected fee, and pending dues metrics.
-* `GET /student/{student_id}` – Detailed fee breakdown for a student.
-* `POST /collect` – Record a new fee payment installment.
-* `GET /receipt/{payment_id}` – Generate fee receipt data / PDF.
-
-### Timetable (`/api/v1/admin/timetable`)
-* `GET /` – Get master timetable slots (filtered by day, course, or teacher).
-* `POST /slots` – Create new lecture slot with conflict validation.
-* `DELETE /slots/{id}` – Remove lecture slot.
-* `GET /report/pdf` – Generate printable Master Timetable PDF.
-
-### Exams (`/api/v1/admin/exams`)
-* `GET /` – List all scheduled exams.
-* `POST /` – Create new exam schedule.
-* `GET /report/pdf` – Generate printable Exam Schedule PDF.
-* `GET /{id}/marks` – View entered marks for an exam.
-
----
-
-## 7. Quality Assurance, Security & Performance Checklist
-
-1. **Security & RBAC Enforcement:**
-   - [ ] Passwords hashed with `bcrypt` (minimum 12 rounds).
-   - [ ] Strict CORS policy configured for mobile web / Capacitor origins.
-   - [ ] Route level dependency checks ensuring non-admins cannot access `/api/v1/admin/*`.
-2. **File Upload Security:**
-   - [ ] Magic byte inspection to verify uploaded image is authentic JPEG/PNG/WebP.
-   - [ ] Content length check <= 102,400 bytes (100 KB limit strictly upheld).
-   - [ ] Strip EXIF metadata to protect user privacy.
-3. **Responsive UI/UX Standards:**
-   - [ ] Tested on 375px (Android phone width) and 820px/1024px (iPad portrait and landscape).
-   - [ ] Minimum 48px touch targets for buttons and interactive controls.
-   - [ ] Custom branded color scheme with high contrast accessibility (WCAG AA compliant).
-4. **Data Integrity:**
-   - [ ] Foreign key constraints across PostgreSQL tables.
-   - [ ] Atomic database transactions during student creation (User + StudentProfile + Enrollments + FeeRecord created in a single ACID transaction).
-   - [ ] MongoDB audit logs capturing every manual fee alteration and course override.
-
----
-
-*Prepared for Skyline Learning Center (SLC Academy) by Antigravity Engineering.*
+### Detailed Phase 2 Milestones:
+1. **Database Schema & Migrations:**
+   - Configure SQLAlchemy 2.0 ORM models and Alembic migration scripts.
+   - Tables: `users`, `students`, `teachers`, `courses`, `classrooms`, `enrollments`, `fee_records`, `fee_payments`, `timetable_slots`, `exams`, `exam_marks`.
+2. **Authentication & Password Self-Service:**
+   - JWT tokens with 24-hour expiration.
+   - Endpoint for Students and Teachers to update their own password only (`/api/v1/auth/change-password`).
+   - Admin restriction for all other profile attributes.
+3. **Pillow Media Pipeline:**
+   - Validate image uploads strictly at `<=` 100 KB.
+   - Convert images to optimized WebP format with standard 400x400 avatars.
+4. **Backend Report Generation:**
+   - Server-side PDF generation endpoints as an alternative to client-side canvas rendering.
+5. **Mobile Packaging:**
+   - Capacitor configuration to bundle the React frontend into an Android APK and iPad app.
