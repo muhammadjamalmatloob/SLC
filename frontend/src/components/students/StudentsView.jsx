@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 import { 
   Search, 
   Plus, 
@@ -107,16 +108,16 @@ export default function StudentsView({ onOpenAddModal, onEditStudent, onCollectF
                       {/* Photo displayed small like an icon (w-11 h-11) */}
                       <div 
                         onClick={() => onZoomPhoto({
-                          imageSrc: student.photoUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400",
+                          imageSrc: student.photoUrl || DEFAULT_AVATAR_PLACEHOLDER,
                           title: student.fullName,
                           subtitle: `Roll No: ${student.rollNumber}`,
-                          sizeKb: student.photoSizeKb || 45
+                          sizeKb: student.photoSizeKb || 12
                         })}
                         className="relative shrink-0 cursor-pointer group"
                         title="Click to view full photo"
                       >
                         <img
-                          src={student.photoUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"}
+                          src={student.photoUrl || DEFAULT_AVATAR_PLACEHOLDER}
                           alt={student.fullName}
                           className="w-11 h-11 rounded-full object-cover border-2 border-coral-200 shadow-xs group-hover:ring-2 group-hover:ring-coral-400 transition-all"
                         />

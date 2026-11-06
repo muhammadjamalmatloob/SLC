@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { X, Upload, Check, Image as ImageIcon, BookOpen } from 'lucide-react';
 import { validatePhotoUpload } from '../../utils/validators';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 
 export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) {
   const { courses, saveTeacher, triggerAlert } = useApp();
@@ -13,8 +14,8 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
     qualification: '',
     specialization: '',
     assignedCourses: [],
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
-    photoSizeKb: 40,
+    photoUrl: DEFAULT_AVATAR_PLACEHOLDER,
+    photoSizeKb: 12,
     status: 'Active'
   });
 
@@ -24,8 +25,8 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
   useEffect(() => {
     if (teacherToEdit) {
       setFormData(teacherToEdit);
-      setPhotoPreview(teacherToEdit.photoUrl);
-      setPhotoSize(teacherToEdit.photoSizeKb || 40);
+      setPhotoPreview(teacherToEdit.photoUrl || DEFAULT_AVATAR_PLACEHOLDER);
+      setPhotoSize(teacherToEdit.photoSizeKb || 12);
     } else {
       setFormData({
         fullName: '',
@@ -34,12 +35,12 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
         qualification: '',
         specialization: '',
         assignedCourses: [],
-        photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
-        photoSizeKb: 40,
+        photoUrl: DEFAULT_AVATAR_PLACEHOLDER,
+        photoSizeKb: 12,
         status: 'Active'
       });
-      setPhotoPreview(null);
-      setPhotoSize(null);
+      setPhotoPreview(DEFAULT_AVATAR_PLACEHOLDER);
+      setPhotoSize(12);
     }
   }, [teacherToEdit, isOpen]);
 
@@ -114,7 +115,7 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
             <h3 className="text-lg font-black text-navy-800">
               {teacherToEdit ? 'Edit Faculty Record' : 'Register New Faculty Member'}
             </h3>
-            <p className="text-xs text-muted">Admin-managed instructor profile & course assignments</p>
+            <p className="text-xs text-muted">Faculty profile, contact information & assigned courses</p>
           </div>
           <button
             onClick={onClose}
@@ -129,11 +130,11 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
           <div className="p-3.5 bg-canvas rounded-2xl border border-gray-200">
             <div className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-white border-2 border-coral-200 shrink-0 shadow-sm flex items-center justify-center">
-                {photoPreview ? (
-                  <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <ImageIcon className="w-8 h-8 text-gray-300" />
-                )}
+                <img 
+                  src={photoPreview || formData.photoUrl || DEFAULT_AVATAR_PLACEHOLDER} 
+                  alt="Preview" 
+                  className="w-full h-full object-cover" 
+                />
                 {photoSize && (
                   <div className="absolute bottom-0 inset-x-0 bg-navy-900/80 text-[8px] text-white font-mono text-center py-0.5">
                     {photoSize} KB
@@ -173,13 +174,16 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-navy-700 mb-1">Official Email *</label>
+              <label className="block text-xs font-bold text-navy-700 mb-1 flex items-center justify-between">
+                <span>Teacher Email (Gmail) *</span>
+                <span className="text-[10px] text-muted font-normal">@gmail.com</span>
+              </label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="tariq@slc.edu.pk"
+                placeholder="e.g. teacher.name@gmail.com"
                 className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
               />
             </div>
@@ -224,7 +228,7 @@ export default function TeacherModal({ isOpen, onClose, teacherToEdit = null }) 
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-bold text-navy-800 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4 text-coral-500" />
-                <span>Assign Courses to Instructor (Admin Controlled)</span>
+                <span>Assign Courses</span>
               </label>
               <span className="text-[10px] text-muted">Select 1 or more</span>
             </div>

@@ -7,7 +7,8 @@ import {
   initialFeePayments,
   initialTimetableSlots,
   initialExams,
-  initialExamMarks
+  initialExamMarks,
+  DEFAULT_AVATAR_PLACEHOLDER
 } from '../data/mockData';
 import {
   validateTimetableSlot,
@@ -20,62 +21,109 @@ import {
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
+  // Check data version to automatically migrate browser storage to O-Level & A-Level stream
+  const isMigrated = localStorage.getItem('slc_cambridge_v4') === 'true';
+  const isAvatarMigrated = localStorage.getItem('slc_avatar_placeholder_v6') === 'true';
+
   // Classrooms State (CRUD)
   const [classrooms, setClassrooms] = useState(() => {
+    if (!isMigrated) return initialClassrooms;
     const saved = localStorage.getItem('slc_classrooms');
     return saved ? JSON.parse(saved) : initialClassrooms;
   });
 
   // Courses State
   const [courses, setCourses] = useState(() => {
+    if (!isMigrated) return initialCourses;
     const saved = localStorage.getItem('slc_courses');
     return saved ? JSON.parse(saved) : initialCourses;
   });
 
-  // Teachers State
+  // Teachers State (default placeholder avatar)
   const [teachers, setTeachers] = useState(() => {
+    if (!isMigrated || !isAvatarMigrated) return initialTeachers;
     const saved = localStorage.getItem('slc_teachers');
-    return saved ? JSON.parse(saved) : initialTeachers;
+    if (!saved) return initialTeachers;
+    try {
+      const parsed = JSON.parse(saved);
+      return parsed.map(t => ({
+        ...t,
+        photoUrl: (!t.photoUrl || t.photoUrl.includes('unsplash.com')) ? DEFAULT_AVATAR_PLACEHOLDER : t.photoUrl,
+        photoSizeKb: t.photoSizeKb || 12
+      }));
+    } catch {
+      return initialTeachers;
+    }
   });
 
-  // Students State
+  // Students State (default placeholder avatar)
   const [students, setStudents] = useState(() => {
+    if (!isMigrated || !isAvatarMigrated) return initialStudents;
     const saved = localStorage.getItem('slc_students');
-    return saved ? JSON.parse(saved) : initialStudents;
+    if (!saved) return initialStudents;
+    try {
+      const parsed = JSON.parse(saved);
+      return parsed.map(s => ({
+        ...s,
+        photoUrl: (!s.photoUrl || s.photoUrl.includes('unsplash.com')) ? DEFAULT_AVATAR_PLACEHOLDER : s.photoUrl,
+        photoSizeKb: s.photoSizeKb || 12
+      }));
+    } catch {
+      return initialStudents;
+    }
   });
 
   // Fee Payments State
   const [feePayments, setFeePayments] = useState(() => {
+    if (!isMigrated) return initialFeePayments;
     const saved = localStorage.getItem('slc_fee_payments');
     return saved ? JSON.parse(saved) : initialFeePayments;
   });
 
   // Timetable State
   const [timetableSlots, setTimetableSlots] = useState(() => {
+    if (!isMigrated) return initialTimetableSlots;
     const saved = localStorage.getItem('slc_timetable');
     return saved ? JSON.parse(saved) : initialTimetableSlots;
   });
 
   // Exams State
   const [exams, setExams] = useState(() => {
+    if (!isMigrated) return initialExams;
     const saved = localStorage.getItem('slc_exams');
     return saved ? JSON.parse(saved) : initialExams;
   });
 
   // Exam Marks State
   const [examMarks, setExamMarks] = useState(() => {
+    if (!isMigrated) return initialExamMarks;
     const saved = localStorage.getItem('slc_exam_marks');
     return saved ? JSON.parse(saved) : initialExamMarks;
   });
 
-  // Authentication State: ONLY ADMIN
+  // Authentication State: ONLY ADMIN (Editable Profile, neutral gray/white avatar placeholder)
   const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('slc_admin_user');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (!parsed.photoUrl || parsed.photoUrl.includes('unsplash.com')) {
+          parsed.photoUrl = DEFAULT_AVATAR_PLACEHOLDER;
+          parsed.photoSizeKb = 12;
+        }
+        return parsed;
+      } catch {
+        // fallback
+      }
+    }
     return {
       id: 'usr-admin-1',
+      username: 'admin',
       fullName: 'System Administrator',
       email: 'admin@slc.edu.pk',
       role: 'admin',
-      photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'
+      photoUrl: DEFAULT_AVATAR_PLACEHOLDER,
+      photoSizeKb: 12
     };
   });
 
@@ -104,6 +152,9 @@ export function AppProvider({ children }) {
 
   // Sync to LocalStorage
   useEffect(() => {
+    localStorage.setItem('slc_cambridge_v4', 'true');
+    localStorage.setItem('slc_avatar_placeholder_v6', 'true');
+    localStorage.setItem('slc_admin_user', JSON.stringify(currentUser));
     localStorage.setItem('slc_classrooms', JSON.stringify(classrooms));
     localStorage.setItem('slc_courses', JSON.stringify(courses));
     localStorage.setItem('slc_teachers', JSON.stringify(teachers));
@@ -113,7 +164,7 @@ export function AppProvider({ children }) {
     localStorage.setItem('slc_exams', JSON.stringify(exams));
     localStorage.setItem('slc_exam_marks', JSON.stringify(examMarks));
     localStorage.setItem('slc_authenticated', isAuthenticated ? 'true' : 'false');
-  }, [classrooms, courses, teachers, students, feePayments, timetableSlots, exams, examMarks, isAuthenticated]);
+  }, [currentUser, classrooms, courses, teachers, students, feePayments, timetableSlots, exams, examMarks, isAuthenticated]);
 
   // Alert Dialog trigger
   const triggerAlert = ({ type = 'error', title, message, code = '', details = null, buttonText = 'Got It', onAction = null }) => {
@@ -143,6 +194,24 @@ export function AppProvider({ children }) {
     }, 4000);
   };
 
+  // Update Admin Profile (Username, Full Name, Profile Pic)
+  const updateAdminProfile = ({ username, fullName, photoUrl, photoSizeKb, email }) => {
+    setCurrentUser(prev => {
+      const updated = {
+        ...prev,
+        ...(username !== undefined && { username: username.trim() }),
+        ...(fullName !== undefined && { fullName: fullName.trim() }),
+        ...(photoUrl !== undefined && { photoUrl }),
+        ...(photoSizeKb !== undefined && { photoSizeKb }),
+        ...(email !== undefined && { email: email.trim() })
+      };
+      localStorage.setItem('slc_admin_user', JSON.stringify(updated));
+      return updated;
+    });
+    addToast('Profile Updated', 'Admin credentials and profile picture updated successfully.', 'success');
+    return true;
+  };
+
   // Login: ONLY ADMIN ALLOWED
   const login = (emailOrUsername, password) => {
     const cleanId = (emailOrUsername || '').trim().toLowerCase();
@@ -158,11 +227,19 @@ export function AppProvider({ children }) {
       return false;
     }
 
-    if (cleanId === 'admin@slc.edu.pk' || cleanId === 'admin') {
+    const currentAdminUsername = (currentUser?.username || 'admin').toLowerCase();
+    const currentAdminEmail = (currentUser?.email || 'admin@slc.edu.pk').toLowerCase();
+
+    if (
+      cleanId === 'admin@slc.edu.pk' || 
+      cleanId === 'admin' || 
+      cleanId === currentAdminUsername || 
+      cleanId === currentAdminEmail
+    ) {
       if (cleanPass === 'admin' || cleanPass === 'admin123') {
         setIsAuthenticated(true);
         setActiveTab('dashboard');
-        addToast('Welcome Back', 'Signed in as System Administrator', 'success');
+        addToast('Welcome Back', `Signed in as ${currentUser?.fullName || 'System Administrator'}`, 'success');
         return true;
       }
     }
@@ -173,7 +250,8 @@ export function AppProvider({ children }) {
       message: 'Invalid credentials. Only Administrator access is active at this stage.',
       code: 'ERR_ADMIN_AUTH_FAILED',
       details: {
-        adminEmail: 'admin@slc.edu.pk',
+        adminIdentifier: currentUser?.username || 'admin',
+        adminEmail: currentUser?.email || 'admin@slc.edu.pk',
         defaultPass: 'admin123'
       },
       buttonText: 'Try Again'
@@ -627,6 +705,7 @@ export function AppProvider({ children }) {
         examMarks,
         saveExamMarks,
         currentUser,
+        updateAdminProfile,
         currentRole: 'admin',
         isAuthenticated,
         login,

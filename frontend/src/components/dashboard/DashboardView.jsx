@@ -50,7 +50,7 @@ export default function DashboardView({ onOpenStudentModal, onOpenFeeModal, onOp
             Skyline Learning Center
           </h1>
           <p className="text-white/80 text-xs sm:text-sm leading-relaxed mb-4">
-            Manage student admissions, manual fee structures, teacher course assignments, conflict-free lecture timetables, and exam reports from one unified dashboard.
+            Student admissions, Cambridge O/A-Levels courses, lecture timetables, fee tracking, and academic examinations.
           </p>
 
           {/* Quick Actions */}

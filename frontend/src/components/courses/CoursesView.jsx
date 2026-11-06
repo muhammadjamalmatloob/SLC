@@ -36,7 +36,7 @@ export default function CoursesView({ onOpenAddModal, onEditCourse }) {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-navy-800">Academic Courses</h2>
-          <p className="text-xs text-muted">Admin-managed curriculum, class, sections & assigned instructors</p>
+          <p className="text-xs text-muted">Curriculum, classes, sections & faculty assignments</p>
         </div>
 
         <button
@@ -147,12 +147,16 @@ export default function CoursesView({ onOpenAddModal, onEditCourse }) {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-50">
-                  <div>
-                    <span className="text-[10px] text-muted block">Base Tuition</span>
-                    <span className="text-sm font-black text-navy-800">
-                      Rs. {course.defaultFee?.toLocaleString()}
+                <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-coral-600 bg-coral-50 px-2.5 py-0.5 rounded-full border border-coral-200">
+                      {course.className}
                     </span>
+                    {course.sectionName && (
+                      <span className="text-[10px] font-medium text-muted">
+                        ({course.sectionName})
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-1">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 import { 
   Menu, 
   X, 
@@ -68,11 +69,13 @@ export default function Header({ onOpenProfile }) {
             title="Admin Profile & Settings"
           >
             <img
-              src={currentUser?.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"}
+              src={currentUser?.photoUrl || DEFAULT_AVATAR_PLACEHOLDER}
               alt="Admin"
               className="w-7 h-7 rounded-full object-cover ring-2 ring-coral-400 shrink-0"
             />
-            <span className="text-xs font-bold text-navy-800 hidden sm:inline">Admin</span>
+            <span className="text-xs font-bold text-navy-800 hidden sm:inline truncate max-w-[120px]">
+              {currentUser?.username || 'Admin'}
+            </span>
           </div>
 
           {/* Three Horizontal Bars Menu Button */}
@@ -121,7 +124,7 @@ export default function Header({ onOpenProfile }) {
             {/* Admin Profile Mini Card */}
             <div className="p-4 mx-4 mt-4 bg-canvas rounded-2xl border border-gray-200 flex items-center gap-3">
               <img
-                src={currentUser?.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"}
+                src={currentUser?.photoUrl || DEFAULT_AVATAR_PLACEHOLDER}
                 alt="Admin"
                 className="w-11 h-11 rounded-full object-cover ring-2 ring-coral-400 shrink-0"
               />

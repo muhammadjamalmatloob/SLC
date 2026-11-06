@@ -30,18 +30,20 @@ The application uses a custom design system inspired by educational academy dash
   * **Desktop / Tablet:** Top navigation bar with active indicators and quick access.
   * **Mobile Screen (< 768px):** Exactly **4 bottom navigation tabs** (**Dashboard**, **Courses**, **Fee**, **Timetable**).
   * **Top-Right 3-Bar Hamburger Drawer:** Quick-access slide-out menu containing all academy modules.
-  * **Top-Right Profile Pill:** Displays administrator avatar, name, and role.
+  * **Top-Right Profile Pill & Profile Modal:** Displays administrator avatar, username, and role. Admin can click to update their **Username**, **Full Name**, and **Profile Picture** (with strict &le; 100 KB validation).
 
 ### 2. Student & Teacher Management
+* **O-Levels & A-Levels Academy:** Specially customized for Cambridge and Edexcel O-Levels and A-Levels streams.
+* **Faculty Records with @gmail.com:** Teachers use personal `@gmail.com` accounts instead of academy webmail.
 * **Compact Icon Profile Photos:** Displayed as small rounded badges (`w-11 h-11 rounded-full object-cover`).
 * **Click-to-Zoom Lightbox:** Clicking any student or teacher photo opens a full-screen zoom modal with a close button (`✕`) and image metadata.
 * **Strict 100 KB Photo Validation:** File size is strictly verified with custom alert dialogs if exceeded.
-* **Student Admissions:** Admin manages enrollments, guardian contacts, and manual fee allocation.
-* **Teacher Directory:** Qualifications, specializations, contact details, and assigned courses.
+* **Student Admissions & Custom Fee Agreement:** Admin selects Cambridge/Edexcel courses and enters the custom tuition fee agreed student-to-student.
 
-### 3. Academic Courses & Classrooms
-* **Course Structure:** Displays Course Title, Course Code, Class Name (e.g. `O-Levels`, `A-Levels`), and optional Section Name (e.g. `Section A`, `CS Wing`). No redundant categories or durations.
-* **Classroom Management (CRUD):** Manage lecture halls, classrooms, computer labs, and science laboratories with room capacity, floor, and building assignments.
+### 3. Cambridge Academic Courses & Classrooms
+* **Course Structure:** Displays Course Title, Subject Code (e.g. `MTH-4024`, `PHY-9702`), Class Name (`O-Levels`, `A-Levels`), and optional Section / Batch Name.
+* **No Fixed Course Fee:** Fee is not fixed by course and is removed from the course page; pricing is customized per student at admission.
+* **Classroom Management (CRUD):** Manage lecture halls, classrooms, computer science labs, and physics/chemistry practical labs with capacity, floor, and building assignments.
 
 ### 4. Conflict-Free Lecture Timetable Scheduler
 * **Automated Instructor Linkage:** Teachers are automatically assigned based on the course settings.
@@ -49,7 +51,7 @@ The application uses a custom design system inspired by educational academy dash
 * **Weekly Master Timetable Report (PDF):** In-page generator for the complete weekly lecture timetable.
 
 ### 5. Fee Management, Cashier & Invoicing
-* **Course-Based Fee Record:** Enrolled courses automatically populate the base fee. Admin can adjust the final agreed fee with discounts.
+* **Student-to-Student Custom Fee:** Agreed tuition package is entered by admin for each student's enrolled subjects.
 * **3-Column Landscape Bank Fee Chalan (PDF):** Formatted with 3 separate columns on A4 Landscape:
   1. **Bank Copy**
   2. **Academy Copy**
@@ -58,7 +60,7 @@ The application uses a custom design system inspired by educational academy dash
   * Official academy header with NTN and serial number
   * Electronic ledger verification badge
   * Student particulars 2-column info card
-  * Itemized enrolled course tuition breakdown table
+  * Enrolled Cambridge courses breakdown table
   * Official payment conditions and rules
   * Triple signature block (Student/Depositor, Official SLC Stamp, Accounts Officer)
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { X, Award, CheckCircle, AlertCircle } from 'lucide-react';
 import { validateExamMarks } from '../../utils/validators';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 
 export default function MarksEntryModal({ isOpen, onClose, exam }) {
   const { students, courses, examMarks, saveExamMarks, triggerAlert } = useApp();
@@ -150,7 +151,7 @@ export default function MarksEntryModal({ isOpen, onClose, exam }) {
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={student.photoUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"}
+                        src={student.photoUrl || DEFAULT_AVATAR_PLACEHOLDER}
                         alt={student.fullName}
                         className="w-10 h-10 rounded-xl object-cover border border-gray-200"
                       />

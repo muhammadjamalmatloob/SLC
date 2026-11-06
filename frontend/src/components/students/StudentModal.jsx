@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { X, Upload, Check, AlertCircle, Image as ImageIcon } from 'lucide-react';
 import { validatePhotoUpload, MAX_PHOTO_BYTES } from '../../utils/validators';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 
 export default function StudentModal({ isOpen, onClose, studentToEdit = null }) {
   const { courses, saveStudent, triggerAlert } = useApp();
@@ -17,8 +18,8 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
     totalFee: 0,
     paidFee: 0,
     admissionDate: new Date().toISOString().split('T')[0],
-    photoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80',
-    photoSizeKb: 35
+    photoUrl: DEFAULT_AVATAR_PLACEHOLDER,
+    photoSizeKb: 12
   });
 
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -27,8 +28,8 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
   useEffect(() => {
     if (studentToEdit) {
       setFormData(studentToEdit);
-      setPhotoPreview(studentToEdit.photoUrl);
-      setPhotoSize(studentToEdit.photoSizeKb || 45);
+      setPhotoPreview(studentToEdit.photoUrl || DEFAULT_AVATAR_PLACEHOLDER);
+      setPhotoSize(studentToEdit.photoSizeKb || 12);
     } else {
       // Default generated roll number
       const randomRoll = `SLC-2026-${Math.floor(100 + Math.random() * 900)}`;
@@ -43,11 +44,11 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
         totalFee: 0,
         paidFee: 0,
         admissionDate: new Date().toISOString().split('T')[0],
-        photoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80',
-        photoSizeKb: 35
+        photoUrl: DEFAULT_AVATAR_PLACEHOLDER,
+        photoSizeKb: 12
       });
-      setPhotoPreview(null);
-      setPhotoSize(null);
+      setPhotoPreview(DEFAULT_AVATAR_PLACEHOLDER);
+      setPhotoSize(12);
     }
   }, [studentToEdit, isOpen]);
 
@@ -63,17 +64,9 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
       updatedCourses = [...formData.enrolledCourseIds, courseId];
     }
 
-    // Auto calculate suggested default fee (Admin can still manually override)
-    const suggestedFee = updatedCourses.reduce((sum, id) => {
-      const crs = courses.find(c => c.id === id);
-      return sum + (crs?.defaultFee || 0);
-    }, 0);
-
     setFormData(prev => ({
       ...prev,
-      enrolledCourseIds: updatedCourses,
-      // If creating new student, suggest default fee as starting point
-      totalFee: !studentToEdit && prev.totalFee === 0 ? suggestedFee : prev.totalFee
+      enrolledCourseIds: updatedCourses
     }));
   };
 
@@ -136,7 +129,7 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
             <h3 className="text-lg font-black text-navy-800">
               {studentToEdit ? 'Update Student Record' : 'New Student Admission'}
             </h3>
-            <p className="text-xs text-muted">Admin-managed enrollment, photo & manual fee assignment</p>
+            <p className="text-xs text-muted">Student enrollment, courses & fee details</p>
           </div>
           <button
             onClick={onClose}
@@ -151,11 +144,11 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
           <div className="p-3.5 bg-canvas rounded-2xl border border-gray-200">
             <div className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-white border-2 border-coral-200 shrink-0 shadow-sm flex items-center justify-center">
-                {photoPreview ? (
-                  <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <ImageIcon className="w-8 h-8 text-gray-300" />
-                )}
+                <img 
+                  src={photoPreview || formData.photoUrl || DEFAULT_AVATAR_PLACEHOLDER} 
+                  alt="Preview" 
+                  className="w-full h-full object-cover" 
+                />
                 {photoSize && (
                   <div className="absolute bottom-0 inset-x-0 bg-navy-900/80 text-[8px] text-white font-mono text-center py-0.5">
                     {photoSize} KB
@@ -229,14 +222,14 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
             </div>
           </div>
 
-          {/* Manual Course Selection for this Student */}
+          {/* Course Selection */}
           <div className="p-3.5 bg-canvas rounded-2xl border border-gray-200">
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-bold text-navy-800">
-                Course Selection <span className="text-coral-500">*</span>
+                Enrolled Courses <span className="text-coral-500">*</span>
               </label>
               <span className="text-[10px] text-muted">
-                Admin selects courses manually
+                {formData.enrolledCourseIds.length} selected
               </span>
             </div>
 
@@ -247,18 +240,20 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
                   <div
                     key={course.id}
                     onClick={() => handleCourseToggle(course.id)}
-                    className={`p-2 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
+                    className={`p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
                       isChecked
                         ? 'bg-coral-50/80 border-coral-400 text-coral-700 font-bold'
                         : 'bg-white border-gray-200 text-navy-700 hover:border-gray-300'
                     }`}
                   >
-                    <div className="truncate">
-                      <span className="font-mono text-[10px] text-muted mr-1">[{course.code}]</span>
+                    <div className="truncate mr-2">
+                      <span className="font-mono text-[10px] text-coral-600 font-bold mr-1">[{course.code}]</span>
                       <span>{course.title}</span>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0 ml-1">
-                      <span className="text-[10px] text-muted">Rs. {course.defaultFee}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-canvas border border-gray-200 text-navy-700">
+                        {course.className}
+                      </span>
                       <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
                         isChecked ? 'bg-coral-500 text-white' : 'border border-gray-300'
                       }`}>
@@ -271,21 +266,16 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
             </div>
           </div>
 
-          {/* Manual Fee Entry by Admin */}
-          <div className="p-3.5 bg-coral-50/50 rounded-2xl border border-coral-100">
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold text-navy-800">
-                Manual Fee Allocation (Admin Controlled)
-              </label>
-              <span className="text-[10px] text-coral-600 font-semibold">
-                Manual Override Permitted
-              </span>
-            </div>
+          {/* Fee Details */}
+          <div className="p-3.5 bg-canvas rounded-2xl border border-gray-200">
+            <label className="block text-xs font-bold text-navy-800 mb-2.5">
+              Fee Details
+            </label>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-navy-700 mb-1">
-                  Total Agreed Fee (Rs.) *
+                <label className="block text-[11px] font-bold text-navy-700 mb-1">
+                  Total Fee (Rs.) *
                 </label>
                 <input
                   type="number"
@@ -293,13 +283,14 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
                   required
                   value={formData.totalFee}
                   onChange={(e) => setFormData({ ...formData, totalFee: Number(e.target.value) })}
-                  className="w-full text-xs font-bold px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-coral-500 bg-white"
+                  placeholder="0"
+                  className="w-full text-xs font-bold px-3 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-navy-700 mb-1">
-                  Initial Payment Received (Rs.)
+                <label className="block text-[11px] font-bold text-navy-700 mb-1">
+                  Paid Amount (Rs.)
                 </label>
                 <input
                   type="number"
@@ -307,14 +298,15 @@ export default function StudentModal({ isOpen, onClose, studentToEdit = null }) 
                   max={formData.totalFee}
                   value={formData.paidFee}
                   onChange={(e) => setFormData({ ...formData, paidFee: Number(e.target.value) })}
-                  className="w-full text-xs font-bold px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-coral-500 bg-white text-emerald-600"
+                  placeholder="0"
+                  className="w-full text-xs font-bold px-3 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 bg-white text-emerald-600"
                 />
               </div>
             </div>
 
             {/* Calculated Balance Preview */}
-            <div className="mt-2.5 pt-2 border-t border-coral-100 flex items-center justify-between text-xs">
-              <span className="text-muted font-medium">Calculated Remaining Balance:</span>
+            <div className="mt-2.5 pt-2 border-t border-gray-200 flex items-center justify-between text-xs">
+              <span className="text-muted font-medium">Remaining Balance:</span>
               <span className="font-extrabold text-navy-900">
                 Rs. {Math.max(0, formData.totalFee - formData.paidFee).toLocaleString()}
               </span>

@@ -11,6 +11,7 @@ import {
 import PdfViewerModal from '../common/PdfViewerModal';
 import FeeChalanDocument from './FeeChalanDocument';
 import FeeReceiptDocument from './FeeReceiptDocument';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 
 export default function FeesView({ onOpenCollectModal }) {
   const { students, feePayments, courses } = useApp();
@@ -113,7 +114,7 @@ export default function FeesView({ onOpenCollectModal }) {
         <div className="bg-white p-4 sm:p-5 rounded-3xl shadow-soft border border-gray-100">
           <div className="text-xs text-muted font-bold uppercase tracking-wider mb-1">Total Agreed Tuition</div>
           <div className="text-2xl font-black text-navy-800">Rs. {totalAgreed.toLocaleString()}</div>
-          <p className="text-[11px] text-muted mt-1">Sum of manual fees set by Admin</p>
+          <p className="text-[11px] text-muted mt-1">Total tuition across enrolled students</p>
         </div>
 
         <div className="bg-white p-4 sm:p-5 rounded-3xl shadow-soft border border-gray-100">
@@ -202,7 +203,7 @@ export default function FeesView({ onOpenCollectModal }) {
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-3">
                       <img
-                        src={student.photoUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"}
+                        src={student.photoUrl || DEFAULT_AVATAR_PLACEHOLDER}
                         alt={student.fullName}
                         className="w-10 h-10 rounded-full object-cover border-2 border-coral-200 shadow-xs shrink-0"
                       />

@@ -30,7 +30,7 @@ export default function TimetableScheduleView({ onOpenAddSlot, onEditSlot }) {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-navy-800">Lecture Timetable Scheduler</h2>
-          <p className="text-xs text-muted">Conflict-free schedule engine with automated instructor linking</p>
+          <p className="text-xs text-muted">Weekly lecture schedule, rooms & faculty timings</p>
         </div>
 
         <div className="flex items-center gap-2">

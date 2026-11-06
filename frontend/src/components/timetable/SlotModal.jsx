@@ -60,10 +60,10 @@ export default function SlotModal({ isOpen, onClose, slotToEdit = null }) {
       >
         <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
           <div>
-            <span className="text-[10px] font-bold tracking-wider uppercase text-coral-500">Scheduler</span>
             <h3 className="text-xl font-extrabold text-navy-800">
               {slotToEdit ? 'Edit Lecture Slot' : 'Schedule New Lecture'}
             </h3>
+            <p className="text-xs text-muted">Set day, time, course, and classroom</p>
           </div>
           <button
             onClick={onClose}
@@ -71,14 +71,6 @@ export default function SlotModal({ isOpen, onClose, slotToEdit = null }) {
           >
             <X className="w-5 h-5" />
           </button>
-        </div>
-
-        {/* Conflict Detection Banner */}
-        <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 mb-4 flex items-start gap-2.5 text-xs text-amber-900">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            <strong>Automated Conflict Checking:</strong> System strictly verifies that the assigned instructor and selected room have zero timing overlaps on this day.
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3.5">

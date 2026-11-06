@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { X, BookOpen, Layers } from 'lucide-react';
+import { X, BookOpen, Layers, Users } from 'lucide-react';
 
 export default function CourseModal({ isOpen, onClose, courseToEdit = null }) {
   const { teachers, saveCourse } = useApp();
@@ -8,10 +8,9 @@ export default function CourseModal({ isOpen, onClose, courseToEdit = null }) {
   const [formData, setFormData] = useState({
     code: '',
     title: '',
-    className: 'Class 10',
+    className: 'O-Levels',
     sectionName: '',
     description: '',
-    defaultFee: 6000,
     assignedTeacherId: ''
   });
 
@@ -20,20 +19,18 @@ export default function CourseModal({ isOpen, onClose, courseToEdit = null }) {
       setFormData({
         code: courseToEdit.code || '',
         title: courseToEdit.title || '',
-        className: courseToEdit.className || 'Class 10',
+        className: courseToEdit.className || 'O-Levels',
         sectionName: courseToEdit.sectionName || '',
         description: courseToEdit.description || '',
-        defaultFee: courseToEdit.defaultFee || 6000,
         assignedTeacherId: courseToEdit.assignedTeacherId || (teachers[0]?.id || '')
       });
     } else {
       setFormData({
         code: '',
         title: '',
-        className: 'Class 10',
+        className: 'O-Levels',
         sectionName: '',
         description: '',
-        defaultFee: 6000,
         assignedTeacherId: teachers[0]?.id || ''
       });
     }
@@ -63,7 +60,7 @@ export default function CourseModal({ isOpen, onClose, courseToEdit = null }) {
             <h3 className="text-lg font-black text-navy-800">
               {courseToEdit ? 'Update Course' : 'Add New Course'}
             </h3>
-            <p className="text-xs text-muted">Course name, class, section, base fee & lead instructor</p>
+            <p className="text-xs text-muted">Course name, Cambridge/Edexcel syllabus, class, section & assigned instructor</p>
           </div>
           <button
             onClick={onClose}
@@ -73,99 +70,89 @@ export default function CourseModal({ isOpen, onClose, courseToEdit = null }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3.5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Course Code & Course Name */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold text-navy-700 mb-1">Course Code *</label>
+              <label className="block text-xs font-bold text-navy-700 mb-1">Subject Code *</label>
               <input
                 type="text"
                 required
                 value={formData.code}
                 onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                placeholder="e.g. MTH-101"
-                className="w-full text-xs font-mono font-bold px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 uppercase"
+                placeholder="e.g. MTH-4024"
+                className="w-full text-xs font-mono font-bold px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 uppercase"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-navy-700 mb-1">Course Name *</label>
+              <label className="block text-xs font-bold text-navy-700 mb-1">Course / Subject Name *</label>
               <input
                 type="text"
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g. Advanced Mathematics"
-                className="w-full text-xs font-semibold px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
+                placeholder="e.g. O-Level Mathematics (Syllabus D)"
+                className="w-full text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
               />
             </div>
           </div>
 
           {/* Class Name & Section Name (Optional) */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-navy-700 mb-1">Class Name *</label>
-              <input
-                type="text"
+              <label className="block text-xs font-bold text-navy-700 mb-1">Academic Class *</label>
+              <select
                 required
                 value={formData.className}
                 onChange={(e) => setFormData({ ...formData, className: e.target.value })}
-                placeholder="e.g. Class 9, Class 10, FSc"
-                className="w-full text-xs font-semibold px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
-              />
+                className="w-full text-xs font-bold px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 bg-white"
+              >
+                <option value="O-Levels">O-Levels (Cambridge / Edexcel)</option>
+                <option value="A-Levels">A-Levels (AS / A2)</option>
+              </select>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-navy-700 mb-1">
-                Section Name <span className="text-muted font-normal text-[10px]">(Optional)</span>
+                Section / Batch <span className="text-muted font-normal text-[10px]">(Optional)</span>
               </label>
               <input
                 type="text"
                 value={formData.sectionName}
                 onChange={(e) => setFormData({ ...formData, sectionName: e.target.value })}
-                placeholder="e.g. Section A (Optional)"
-                className="w-full text-xs px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
+                placeholder="e.g. Morning Batch, Evening Batch"
+                className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
               />
             </div>
           </div>
 
-          {/* Base Fee & Lead Instructor */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold text-navy-700 mb-1">Base Reference Fee (Rs.) *</label>
-              <input
-                type="number"
-                min="0"
-                required
-                value={formData.defaultFee}
-                onChange={(e) => setFormData({ ...formData, defaultFee: Number(e.target.value) })}
-                className="w-full text-xs font-bold px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-navy-700 mb-1">Assigned Instructor *</label>
-              <select
-                required
-                value={formData.assignedTeacherId}
-                onChange={(e) => setFormData({ ...formData, assignedTeacherId: e.target.value })}
-                className="w-full text-xs font-medium px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 bg-white"
-              >
-                <option value="">-- Select Instructor --</option>
-                {teachers.map(t => (
-                  <option key={t.id} value={t.id}>{t.fullName} ({t.qualification})</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
+          {/* Lead Instructor */}
           <div>
-            <label className="block text-xs font-bold text-navy-700 mb-1">Course Description</label>
+            <label className="block text-xs font-bold text-navy-700 mb-1">Assigned Teacher *</label>
+            <select
+              required
+              value={formData.assignedTeacherId}
+              onChange={(e) => setFormData({ ...formData, assignedTeacherId: e.target.value })}
+              className="w-full text-xs font-medium px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 bg-white"
+            >
+              <option value="">-- Select Assigned Faculty Member --</option>
+              {teachers.map(t => (
+                <option key={t.id} value={t.id}>
+                  {t.fullName} ({t.specialization})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-xs font-bold text-navy-700 mb-1">Syllabus Overview & Description</label>
             <textarea
               rows="3"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Syllabus topics, objectives, or course overview..."
+              placeholder="Cambridge syllabus code, key paper components, practical labs..."
               className="w-full text-xs p-3 rounded-xl border border-gray-200 focus:outline-none focus:border-coral-500 resize-none"
             />
           </div>

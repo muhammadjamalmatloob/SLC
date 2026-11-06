@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { DEFAULT_AVATAR_PLACEHOLDER } from '../../data/mockData';
 import { 
   Search, 
   Plus, 
@@ -84,16 +85,16 @@ export default function TeachersView({ onOpenAddModal, onEditTeacher, onZoomPhot
                       {/* Photo displayed small like an icon (w-11 h-11) + Click to zoom */}
                       <div 
                         onClick={() => onZoomPhoto({
-                          imageSrc: teacher.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
+                          imageSrc: teacher.photoUrl || DEFAULT_AVATAR_PLACEHOLDER,
                           title: teacher.fullName,
                           subtitle: `${teacher.qualification} • Faculty Member`,
-                          sizeKb: teacher.photoSizeKb || 40
+                          sizeKb: teacher.photoSizeKb || 12
                         })}
                         className="relative shrink-0 cursor-pointer group"
                         title="Click to view full photo"
                       >
                         <img
-                          src={teacher.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"}
+                          src={teacher.photoUrl || DEFAULT_AVATAR_PLACEHOLDER}
                           alt={teacher.fullName}
                           className="w-11 h-11 rounded-full object-cover border-2 border-coral-200 shadow-xs group-hover:ring-2 group-hover:ring-coral-400 transition-all"
                         />
@@ -154,7 +155,7 @@ export default function TeachersView({ onOpenAddModal, onEditTeacher, onZoomPhot
 
                     <div className="flex flex-wrap gap-1.5">
                       {assignedCourseObjs.length === 0 ? (
-                        <span className="text-[10px] text-muted italic">No courses currently assigned by Admin.</span>
+                        <span className="text-[10px] text-muted italic">No courses currently assigned.</span>
                       ) : (
                         assignedCourseObjs.map(crs => (
                           <span

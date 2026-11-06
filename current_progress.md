@@ -1,10 +1,10 @@
 # Skyline Learning Center (SLC Academy)
 ## Current Progress & Status Report
 
-> **Last Updated:** November 06, 2026  
+> **Last Updated:** November 06, 2026 (O/A-Levels Stream Update)  
 > **Current Phase:** Phase 1 (Frontend Admin Application & PDF Generation Engine) — **Complete & Verified**  
 > **Development Server:** Running on `http://localhost:5174/` (Vite v6.4.5)  
-> **Build Status:** Passing with 0 errors (`✓ built in 18.97s`)
+> **Build Status:** Passing with 0 errors (`✓ built in 23.91s`)
 
 ---
 
@@ -45,28 +45,38 @@ pie title Phase 1 Deliverables Status
 * **Strict 100 KB Photo Validation:** Both Student Admission and Teacher Registration forms enforce a strict 100 KB limit, displaying a custom error dialog if violated.
 * **Custom Alert & Error Box (`CustomAlertModal.jsx`):** Replaced native browser alerts with custom animated modals for alerts, confirmations, and validation errors.
 
-### 2.3 Courses & Classroom Management
+### 2.3 O-Levels & A-Levels Cambridge Curriculum & Classrooms
 * **Course Structure (`CoursesView.jsx`):**
-  * Displays Course Name, Course Code, Class Name (e.g. `O-Levels`, `A-Levels`), and optional Section Name.
-  * Removed category and duration fields.
-  * Auto-links assigned instructors.
+  * Dedicated Cambridge and Edexcel O-Levels (`MTH-4024`, `PHY-5054`, `CHM-5070`, `CS-2210`, `ENG-1123`) and A-Levels (`MTH-9709`, `PHY-9702`, `CS-9618`, `ECN-9708`).
+  * Removed fixed "Base Tuition / Fee" from course cards and course modals (fee is customized student-to-student).
+  * Auto-links assigned faculty members.
 * **Classrooms CRUD (`ClassroomsView.jsx`):**
   * Full create, read, update, delete functionality for classrooms, lecture halls, and laboratories.
   * Tracks room capacity, building, floor, and room type.
 
-### 2.4 Conflict-Free Timetable Scheduler
+### 2.4 Faculty Members with @gmail.com
+* Faculty records updated with personal `@gmail.com` addresses (e.g. `salman.ali.cambridge@gmail.com`, `sarah.khan.physics@gmail.com`).
+* Teacher registration form updated with `@gmail.com` input helper.
+
+### 2.5 Admin Profile Management
+* Admin can click their profile avatar (or open it from the top-right hamburger menu) to update:
+  * Admin Username (persisted to localStorage and usable for login).
+  * Admin Full Name / Designation.
+  * Admin Profile Picture with strict `<= 100 KB` file validation, live avatar preview, and verified size badge.
+
+### 2.6 Conflict-Free Timetable Scheduler
 * **Automated Instructor Assignment:** Instructors are automatically selected based on the assigned course instructor (preventing manual mismatch).
 * **Collision-Detection Engine:** Prevents assigning the same instructor or same classroom to overlapping lecture slots on any day.
 * **Weekly Master Timetable Report (PDF):** In-page generator exporting the complete weekly lecture schedule.
 
-### 2.5 Fee Management, 3-Column Chalan & Official Receipt
-* **Course-Based Fee Tracking:** Base fees calculate automatically from enrolled courses; admin can enter manual agreed fees and discounts.
+### 2.7 Customized Student Fee Allocation, 3-Column Chalan & Official Receipt
+* **Student-to-Student Agreed Pricing:** Fee is not fixed by course. While adding a student, the admin selects their enrolled subjects and enters the overall customized tuition fee and advance payment.
 * **3-Column Landscape Bank Fee Chalan (PDF):**
   * Formatted in 3 distinct columns on A4 Landscape: **Bank Copy**, **Academy Copy**, and **Student Copy**.
   * Contains bank account numbers, chalan numbers, student metadata, fee breakdown, and cashier signature boxes.
 * **Official Fee Payment Receipt (A4 Portrait):**
   * Automatically issued when dues are cleared (`balance === 0`) or upon cashier payment collection.
-  * Formatted with academy header & NTN, verification badge, student particulars 2-column card, enrolled courses tuition breakdown table, payment summary, academy conditions, and official triple-signatures (Student, Accounts Stamp, Accounts Officer).
+  * Formatted with academy header & NTN, verification badge, student particulars 2-column card, enrolled Cambridge courses table, payment summary, academy conditions, and official triple-signatures (Student, Accounts Stamp, Accounts Officer).
 
 ### 2.6 Examination & Detailed Marks Certificate (DMC)
 * **Exam Management:** Admin schedules exams with total marks, passing marks, venue, and invigilator.

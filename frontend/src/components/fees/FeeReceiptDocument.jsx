@@ -104,9 +104,9 @@ export default function FeeReceiptDocument({ student, payment = null }) {
           <thead className="bg-navy-900 text-white font-bold text-[11px]">
             <tr>
               <th className="py-2.5 px-3">#</th>
-              <th className="py-2.5 px-3">Description / Course Title</th>
+              <th className="py-2.5 px-3">Enrolled Cambridge Course / Subject</th>
               <th className="py-2.5 px-3">Class & Section</th>
-              <th className="py-2.5 px-3 text-right">Standard Tuition</th>
+              <th className="py-2.5 px-3 text-right">Enrollment Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -122,7 +122,9 @@ export default function FeeReceiptDocument({ student, payment = null }) {
                     {c.className} {c.sectionName ? `(${c.sectionName})` : ''}
                   </td>
                   <td className="py-2.5 px-3 text-right font-medium">
-                    Rs. {c.defaultFee?.toLocaleString()}
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                      Confirmed Active
+                    </span>
                   </td>
                 </tr>
               ))
@@ -135,7 +137,7 @@ export default function FeeReceiptDocument({ student, payment = null }) {
             )}
             <tr className="bg-gray-100/90 font-bold text-xs border-t-2 border-gray-300">
               <td colSpan="3" className="py-2.5 px-3 text-navy-900">
-                Agreed Total Tuition Fee (Approved by Admin)
+                Agreed Total Tuition Fee (Custom Student Package)
               </td>
               <td className="py-2.5 px-3 text-right text-navy-900 font-mono">
                 Rs. {student.totalFee?.toLocaleString()}
