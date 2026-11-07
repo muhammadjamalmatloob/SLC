@@ -46,8 +46,12 @@ export default function Header({ onOpenProfile }) {
           onClick={() => setActiveTab('dashboard')}
           className="flex items-center gap-3 cursor-pointer select-none"
         >
-          <div className="w-9 h-9 rounded-2xl gradient-coral flex items-center justify-center text-white font-black text-sm shadow-glow shrink-0">
-            SLC
+          <div className="w-10 h-10 rounded-2xl bg-white border border-gray-100 flex items-center justify-center p-0.5 shadow-sm shrink-0 overflow-hidden hover:scale-105 transition-transform">
+            <img 
+              src="/logo.jpeg" 
+              alt="Skyline Learning Center" 
+              className="w-full h-full object-contain rounded-xl" 
+            />
           </div>
           <div>
             <h1 className="text-sm sm:text-base font-black text-navy-800 leading-tight">
@@ -104,8 +108,12 @@ export default function Header({ onOpenProfile }) {
             {/* Drawer Header */}
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl gradient-coral flex items-center justify-center text-white font-black text-xs shadow-glow">
-                  SLC
+                <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center p-0.5 shadow-sm shrink-0 overflow-hidden">
+                  <img 
+                    src="/logo.jpeg" 
+                    alt="Skyline Learning Center" 
+                    className="w-full h-full object-contain rounded-lg" 
+                  />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm text-navy-900">Academy Menu</h3>

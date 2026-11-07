@@ -29,8 +29,12 @@ export default function FeeReceiptDocument({ student, payment = null }) {
           <span>CAMPUS ID: SLC-ISB-01</span>
         </div>
 
-        <div className="w-12 h-12 rounded-2xl gradient-coral text-white font-black text-xl flex items-center justify-center mx-auto mb-2 shadow-glow">
-          SLC
+        <div className="w-14 h-14 rounded-2xl bg-white border border-gray-200 p-1 flex items-center justify-center mx-auto mb-2 shadow-xs overflow-hidden">
+          <img 
+            src="/logo.jpeg" 
+            alt="Skyline Learning Center" 
+            className="w-full h-full object-contain rounded-xl" 
+          />
         </div>
         <h1 className="text-2xl font-black tracking-tight text-navy-900">
           SKYLINE LEARNING CENTER

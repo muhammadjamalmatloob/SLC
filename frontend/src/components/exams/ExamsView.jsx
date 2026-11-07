@@ -171,8 +171,12 @@ export default function ExamsView({ onOpenAddExam, onOpenMarksModal, onEditExam 
       >
         <div className="text-navy-900 space-y-6">
           <div className="text-center pb-4 border-b-2 border-navy-900">
-            <div className="w-10 h-10 rounded-2xl gradient-coral text-white font-black text-sm flex items-center justify-center mx-auto mb-2 shadow-glow">
-              SLC
+            <div className="w-12 h-12 rounded-2xl bg-white border border-gray-200 p-1 flex items-center justify-center mx-auto mb-2 shadow-xs overflow-hidden">
+              <img 
+                src="/logo.jpeg" 
+                alt="Skyline Learning Center" 
+                className="w-full h-full object-contain rounded-xl" 
+              />
             </div>
             <h2 className="text-xl font-black tracking-tight text-navy-900">
               SKYLINE LEARNING CENTER (SLC ACADEMY)

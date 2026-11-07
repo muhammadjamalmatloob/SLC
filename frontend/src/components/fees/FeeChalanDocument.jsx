@@ -31,6 +31,13 @@ export default function FeeChalanDocument({ student }) {
             <div>
               {/* Header */}
               <div className="text-center pb-2 border-b border-navy-800 mb-2">
+                <div className="w-9 h-9 mx-auto mb-1 flex items-center justify-center">
+                  <img 
+                    src="/logo.jpeg" 
+                    alt="SLC Logo" 
+                    className="w-full h-full object-contain" 
+                  />
+                </div>
                 <div className="font-black text-sm tracking-tight text-navy-900">
                   SKYLINE LEARNING CENTER
                 </div>

@@ -19,8 +19,12 @@ export default function LoginView() {
       <div className="w-full max-w-md bg-white rounded-4xl p-6 sm:p-8 shadow-card border border-gray-100 animate-scale-up">
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-3xl gradient-coral text-white font-black text-2xl flex items-center justify-center mx-auto mb-3 shadow-glow">
-            SLC
+          <div className="w-20 h-20 rounded-3xl bg-white p-2 border border-gray-100 shadow-md mx-auto mb-3 flex items-center justify-center overflow-hidden">
+            <img 
+              src="/logo.jpeg" 
+              alt="Skyline Learning Center Logo" 
+              className="w-full h-full object-contain rounded-2xl" 
+            />
           </div>
           <h1 className="text-2xl font-black text-navy-800 tracking-tight">Skyline Learning Center</h1>
           <p className="text-xs text-muted mt-1">Administrator Control Panel</p>

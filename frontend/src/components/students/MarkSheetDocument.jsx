@@ -60,8 +60,12 @@ export default function MarkSheetDocument({ student }) {
     <div className="space-y-6 text-navy-900 bg-white">
       {/* Official Header */}
       <div className="text-center border-b-2 border-navy-900 pb-5">
-        <div className="w-12 h-12 rounded-2xl gradient-coral text-white font-black text-lg flex items-center justify-center mx-auto mb-2 shadow-glow">
-          SLC
+        <div className="w-14 h-14 rounded-2xl bg-white border border-gray-200 p-1 flex items-center justify-center mx-auto mb-2 shadow-xs overflow-hidden">
+          <img 
+            src="/logo.jpeg" 
+            alt="Skyline Learning Center" 
+            className="w-full h-full object-contain rounded-xl" 
+          />
         </div>
         <h1 className="text-2xl font-black tracking-tight text-navy-900">
           SKYLINE LEARNING CENTER

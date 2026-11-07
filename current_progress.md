@@ -121,12 +121,34 @@ pie title Phase 1 Deliverables Status
 | **Timetable Scheduler** | `frontend/src/components/timetable/TimetableScheduleView.jsx` | Conflict-free scheduler & timetable report |
 | **Exam Date Sheet** | `frontend/src/components/exams/ExamsView.jsx` | Exam schedule & date sheet report |
 | **Classroom CRUD** | `frontend/src/components/classrooms/ClassroomsView.jsx` | Classroom & laboratory management |
-| **Global State & Conflict** | `frontend/src/context/AppContext.jsx` | State, validation, and collision engine |
-| **Mock Database** | `frontend/src/data/mockData.js` | Initial mock datasets for SLC Academy |
+| **Official Academy Logo** | `frontend/public/logo.jpeg` | High-res academy logo used in header, login, reports & favicon |
+| **Global State & Conflict** | `frontend/src/context/AppContext.jsx` | State, validation, migration & collision engine |
+| **Mock Database** | `frontend/src/data/mockData.js` | Initial mock datasets & avatar placeholder for SLC Academy |
 
 ---
 
-## 5. Next Steps (Phase 2: Backend & Multi-Role)
+## 5. Recent Enhancements & Brand Customizations
+
+1. **Official Academy Logo Integration (`/logo.jpeg`):**
+   - **Favicon & Web App Icon:** Configured `<link rel="icon" type="image/jpeg" href="/logo.jpeg" />` in `index.html`.
+   - **Login View:** Displayed high-resolution academy logo on the Administrator Access Portal card.
+   - **Top Navigation Header:** Branded academy logo with smooth hover scale on the top-left navigation.
+   - **Navigation Slide-Over Drawer:** Displayed official logo in the slide-out menu header.
+   - **Dashboard Banner:** Integrated academy logo into the main welcome card.
+   - **Fee Chalan Document (3-Column):** Placed academy logo header on Bank Copy, Academy Copy, and Student Copy.
+   - **Official Fee Receipt:** Integrated academy logo in the header and receipt banner.
+   - **DMC Student Mark Sheet:** Replaced text icon with official logo on academic transcripts.
+   - **Exam Date Sheet & Timetable Reports:** Academy logo rendered at the top of printable PDF date sheets and schedules.
+
+2. **Default Profile Picture (Gray & White Placeholder):**
+   - Replaced all demo external photos with a crisp, neutral gray and white vector silhouette avatar (`DEFAULT_AVATAR_PLACEHOLDER`).
+   - Defaulted for Administrator, all faculty members, and enrolled students.
+   - Enforced automatic LocalStorage state migration so users immediately see the new placeholder without manual cache clearing.
+   - Retained strict `<= 100 KB` validation for custom photo uploads and click-to-zoom modal preview.
+
+---
+
+## 6. Next Steps (Phase 2: Backend & Multi-Role)
 
 1. **FastAPI REST API:** Create endpoints for Auth, Students, Teachers, Courses, Classrooms, Fees, Timetables, and Exams.
 2. **PostgreSQL Relational DB:** Set up SQLAlchemy 2.0 ORM schemas and Alembic database migrations.

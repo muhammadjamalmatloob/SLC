@@ -46,9 +46,18 @@ export default function DashboardView({ onOpenStudentModal, onOpenFeeModal, onOp
           <div className="inline-flex items-center bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold mb-3 border border-white/20 tracking-wide uppercase text-[11px]">
             Administrator Control Panel
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">
-            Skyline Learning Center
-          </h1>
+          <div className="flex items-center gap-3.5 mb-2">
+            <div className="w-12 h-12 rounded-2xl bg-white p-1 border border-white/30 shadow-md shrink-0 flex items-center justify-center overflow-hidden">
+              <img 
+                src="/logo.jpeg" 
+                alt="Skyline Learning Center" 
+                className="w-full h-full object-contain rounded-xl" 
+              />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+              Skyline Learning Center
+            </h1>
+          </div>
           <p className="text-white/80 text-xs sm:text-sm leading-relaxed mb-4">
             Student admissions, Cambridge O/A-Levels courses, lecture timetables, fee tracking, and academic examinations.
           </p>
